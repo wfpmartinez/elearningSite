@@ -1,13 +1,18 @@
 from django.db import models
 
 '''
-Curso
 Estudiante -> Curso (estudiante se registra a un curso)
 Asignación -> Curso (varias asignaciones son creadas en un curso, pueden ser tareas, trabajos, exámenes, etc.)
 RespuestaAsignacion -> Asignación, Estudiante
 Comments -> RespuestaAsignacion
 Calificación -> RespuestaAsignacion
 '''
+# Define user types
+# class User(AbstractUser):
+#     is_student = models.BooleanField(default=False)
+#     is_teacher = models.BooleanField(default=False)
+
+# Course is created by a teacher
 class Course(models.Model):
     course_name = models.CharField('Nombre del Curso', max_length=200)
     pub_date = models.DateTimeField('Fecha Apertura')
@@ -15,6 +20,9 @@ class Course(models.Model):
     def __str__(self):
         return self.course_name
 
+# Assignments are related to a course
+# these can be of different types, such as, indidivual tasks,
+# groupal works and exams
 class Assignment(models.Model):
     ASSIGNMENT_TYPE_CHOICES = (
         (1, 'Tarea'),
@@ -29,6 +37,17 @@ class Assignment(models.Model):
     deadline_date = models.DateTimeField('Fecha de Entrega')
     pub_date = models.DateTimeField('Fecha de Publicación')
     is_active = models.BooleanField('Activo')
+
+    def __str__(self):
+        return self.assignment_name
+
+#
+# class Student(models.Model):
+#     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+#     Courses = models.ManyToManyField(Course, through='StudentCourse')
+#     student_name = models.CharField()
+
+
 
 
 '''
@@ -80,4 +99,13 @@ class UserAnswer(models.Model):
     class Meta:
         unique_together = ('question', 'user', )
 
+
+class User(AbstractUser):
+    is_student = models.BooleanField(default=False)
+    is_teacher = models.BooleanField(default=False)
+
+class Student(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    quizzes = models.ManyToManyField(Quiz, through='TakenQuiz')
+    interests = models.ManyToManyField(Subject, related_name='interested_students')
 '''
