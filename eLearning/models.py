@@ -1,12 +1,19 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 '''
+* Curso
 Estudiante -> Curso (estudiante se registra a un curso)
-Asignación -> Curso (varias asignaciones son creadas en un curso, pueden ser tareas, trabajos, exámenes, etc.)
-RespuestaAsignacion -> Asignación, Estudiante
+* Asignación -> Curso (varias asignaciones son creadas en un curso, pueden ser tareas, trabajos, exámenes, etc.)
+RespuestaAsignacion -> Asignación, Estudiante, Calificación
 Comments -> RespuestaAsignacion
-Calificación -> RespuestaAsignacion
 '''
+
+# Define custom user types, in this case we will have only students and teachers
+class User(AbstractUser):
+    is_student = models.BooleanField(default=False)
+    is_teacher = models.BooleanField(default=False)
+
 # Define user types
 # class User(AbstractUser):
 #     is_student = models.BooleanField(default=False)
@@ -51,37 +58,6 @@ class Assignment(models.Model):
 
 
 '''
-class Section(models.Model):
-    course = models.ForeignKey(Course)
-    title = models.CharField(max_length=100)
-    number = models.IntegerField()
-    test = models.TextField()
-
-    class Meta:
-        unique_together = ('course', 'number', )
-
-    def __str__(self):
-        return self.title
-
-    def get_test_url(self):
-        return reverse('do_test', args=(self.id,))
-
-    def get_absolute_url(self):
-        return reverse('do_test', args=(self.id,))
-
-    def get_next_section_url(self):
-        next_section = Section.objects.get(number=self.number+1)
-        return reverse('do_section', args=(next_section.id,))
-
-
-class Question(models.Model):
-    section = models.ForeignKey(Section)
-    text = models.CharField(max_length=1000)
-
-    def __str__(self):
-        return self.text
-
-
 class Answer(models.Model):
     question = models.ForeignKey(Question)
     text = models.CharField(max_length=1000)
@@ -98,11 +74,6 @@ class UserAnswer(models.Model):
 
     class Meta:
         unique_together = ('question', 'user', )
-
-
-class User(AbstractUser):
-    is_student = models.BooleanField(default=False)
-    is_teacher = models.BooleanField(default=False)
 
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)

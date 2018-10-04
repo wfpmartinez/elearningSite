@@ -89,6 +89,8 @@ DATABASES = {
     }
 }
 
+#Custom User Model
+AUTH_USER_MODEL = "eLearning.User"
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
