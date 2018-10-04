@@ -1,3 +1,4 @@
+from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
@@ -27,6 +28,10 @@ class Course(models.Model):
     def __str__(self):
         return self.course_name
 
+    class Meta:
+        verbose_name = _('Curso')
+        verbose_name_plural = _('Cursos')
+
 # Assignments are related to a course
 # these can be of different types, such as, indidivual tasks,
 # groupal works and exams
@@ -48,6 +53,9 @@ class Assignment(models.Model):
     def __str__(self):
         return self.assignment_name
 
+    class Meta:
+        verbose_name = _('Asignación')
+        verbose_name_plural = _('Asignaciones')
 #
 # class Student(models.Model):
 #     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
